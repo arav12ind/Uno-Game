@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameScreen.GameScreenController">
+   <children>
+      <Label layoutX="93.0" layoutY="14.0" prefHeight="39.0" prefWidth="107.0" text="TOP CARD">
+         <font>
+            <Font size="22.0" />
+         </font></Label>
+      <Label layoutX="89.0" layoutY="117.0" prefHeight="31.0" prefWidth="92.0" text="YOUR CARDS">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
