@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="290.0" styleClass="Wscreen" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="waitingScreen.WaitScreenController">
+   <stylesheets> <URL value="@wait_bg.css" /></stylesheets>
+   <children>
+      <AnchorPane prefHeight="400.0" prefWidth="290.0">
+         <children>
+            <Label alignment="CENTER" layoutX="9.0" prefHeight="79.0" prefWidth="237.0" text="MATCHING">
+               <textFill>
+                  <RadialGradient centerX="0.5333333333333333" centerY="0.44761904761904764" radius="0.6976744186046512">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="0.75" green="0.23999999463558197" blue="0.23999999463558197" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.5215686559677124" green="0.12156862765550613" blue="0.8196078538894653" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <font>
+                  <Font name="MV Boli" size="38.0" />
+               </font></Label>
+            <Label alignment="CENTER" layoutX="23.0" layoutY="104.0" prefHeight="79.0" prefWidth="245.0" text="Server is finding players for you" textAlignment="CENTER" wrapText="true">
+               <textFill>
+                  <RadialGradient centerX="0.5333333333333333" centerY="0.44761904761904764" radius="0.6976744186046512">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="0.23999999463558197" green="0.75" blue="0.29155233502388" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.8299999833106995" green="0.11620000004768372" blue="0.750116229057312" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <font>
+                  <Font name="Serif Bold" size="21.0" />
+               </font>
+            </Label>
+            <Button fx:id="cancel" layoutX="90.0" layoutY="251.0" mnemonicParsing="false" onAction="#setCancelOccured" prefHeight="50.0" prefWidth="111.0" styleClass="cancel" text="CANCEL">
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0" startY="0.49523809523809526">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="0.8980392217636108" green="0.054901961237192154" blue="0.054901961237192154" />
+                           </color>
+                        </Stop>
+                        <Stop offset="0.9923371647509578">
+                           <color>
+                              <Color red="0.4250859320163727" green="0.06239999830722809" blue="0.7799999713897705" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.41960784792900085" green="0.07058823853731155" blue="0.7686274647712708" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+               <font>
+                  <Font name="Sylfaen" size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Label fx:id="test" layoutX="111.0" layoutY="104.0" textFill="#0ccf1c" />
+            <ImageView fitHeight="79.0" fitWidth="67.0" layoutX="105.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@loading2.jpeg" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

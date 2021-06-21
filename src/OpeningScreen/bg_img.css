@@ -1,0 +1,6 @@
+.anchor{
+    -fx-background-image: url("uno_backg_img.jpg");
+	-fx-background-repeat: stretch;
+	-fx-background-size: 272 400;
+	-fx-background-position: center
+}

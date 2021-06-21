@@ -1,0 +1,21 @@
+.playButtonHighlight:hover
+{
+    -fx-background-color: white;
+    -fx-font-size: 26;
+    -fx-border-color: green;
+}
+.playButtonHighlight:pressed
+{
+    -fx-rotate: 10;
+}
+
+.exitButtonHighlight:hover
+{
+    -fx-background-color: white;
+    -fx-font-size: 26;
+    -fx-border-color: green;
+}
+.exitButtonHighlight:pressed
+{
+    -fx-rotate: 10;
+}

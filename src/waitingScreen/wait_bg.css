@@ -1,0 +1,34 @@
+.Wscreen{
+     -fx-background-image: url("Loading.gif");
+    	-fx-background-size: cover;
+    	-fx-background-position: center;
+}
+.cancel{
+    -fx-background-color:
+             #ffffff,
+            #A31FD1,
+            #A31FD1,
+            #000000;
+        -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+        -fx-background-radius: 3px, 3px, 2px, 1px;
+        -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+        -fx-text-fill: linear-gradient(#e50e0e 50% ,#6b12c4 20%);
+        -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+        -fx-font-family: "Arial";
+        -fx-font-size: 15px;
+}
+
+.cancel:hover{
+    -fx-background-color:
+             #ffffff,
+            #D11F49,
+            #D11F49,
+            #000000;
+        -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+        -fx-background-radius: 3px, 3px, 2px, 1px;
+        -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+        -fx-text-fill: linear-gradient(#e50e0e 50% ,#6b12c4 20%);
+        -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+        -fx-font-family: "Arial";
+        -fx-font-size: 15px;
+}
