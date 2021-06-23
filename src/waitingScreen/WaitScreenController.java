@@ -15,7 +15,7 @@ public class WaitScreenController implements javafx.fxml.Initializable {
     public static void initVariables(java.io.BufferedReader in, java.io.PrintWriter out, javafx.stage.Stage s) throws java.io.IOException, InterruptedException {
         //System.out.println("in initvar");
         stage = s;
-        new Thread(new WaitForReadySignal(in,out)).start();
+        new Thread(new waitingScreen.WaitForReadySignal(in,out)).start();
     }
 
     public static class CancelManager{

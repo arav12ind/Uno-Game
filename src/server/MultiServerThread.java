@@ -1,12 +1,9 @@
 package server;
 
-import java.net.*;
-import java.io.*;
-
 public class MultiServerThread extends Thread
 {
-    private final Socket socket;
-  public MultiServerThread(Socket socket)
+    private final java.net.Socket socket;
+  public MultiServerThread(java.net.Socket socket)
   {
   	super("MultiServerThread");
   	this.socket = socket;
@@ -16,16 +13,16 @@ public class MultiServerThread extends Thread
   {
   	System.out.println("New client with address : "+socket.getInetAddress());
   	try {
-  	    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+  	    java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
         String inputLine;
-        PlayerQueue.AddPlayerToQueue(socket);
-        while (!PlayerQueue.isGameStarted()) {
+        server.PlayerQueue.AddPlayerToQueue(socket);
+        while (!server.PlayerQueue.isGameStarted()) {
             if(in.ready())
             {
                 inputLine = in.readLine();
                 if(inputLine.equalsIgnoreCase("cancel"))
                 {
-                    PlayerQueue.removePlayer(socket);
+                    server.PlayerQueue.removePlayer(socket);
                     System.out.println(socket.getInetAddress()+" : left");
                     break;
                 }
@@ -33,7 +30,7 @@ public class MultiServerThread extends Thread
             Thread.sleep(500);
         }
     }
-     catch (IOException | InterruptedException e)
+     catch (java.io.IOException | InterruptedException e)
      {
 	      e.printStackTrace();
      }

@@ -1,23 +1,14 @@
 package OpeningScreen;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+public class Main extends javafx.application.Application {
 
-import java.util.Objects;
-
-public class Main extends Application {
-    public static final Scene scene = new Scene(new Button(), 270, 400);
     @Override
-    public void start(Stage stage) throws Exception{
-        scene.setRoot(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("openingScreen.fxml"))));
-        stage.setTitle("Hello World");
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.show();
+    public void start(javafx.stage.Stage primaryStage) throws Exception{
+        javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("openingScreen.fxml"));
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new javafx.scene.Scene(root, 700, 700));
+        primaryStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
+        primaryStage.show();
     }
 
 

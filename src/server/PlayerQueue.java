@@ -1,20 +1,14 @@
 package server;
 
-import uno.UnoGame;
-
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class PlayerQueue
 {
-  private static Queue<Socket> playerQueue = new LinkedList<Socket>();
-  private static ArrayList<Socket> sendPlayerList = new ArrayList<Socket>();
+  private static java.util.Queue<java.net.Socket> playerQueue = new java.util.LinkedList<java.net.Socket>();
+  private static java.util.ArrayList<java.net.Socket> sendPlayerList = new java.util.ArrayList<java.net.Socket>();
   private static final int playersPerGame = 1;
   private static boolean gameOver = false;
   private static boolean gameStarted = false;
-  public static void AddPlayerToQueue(Socket player) throws InterruptedException {
+  public static void AddPlayerToQueue(java.net.Socket player)
+  {
     int i;
       playerQueue.add(player);
       System.out.println("player queue size : " + playerQueue.size());
@@ -25,10 +19,11 @@ public class PlayerQueue
 
         System.out.println("Starting new game");
         gameStarted=true;
-        new UnoGame(sendPlayerList,playersPerGame);
+        new uno.UnoGame(sendPlayerList,playersPerGame);
         gameOver = true;
         System.out.println("COMPLETED GAME...");
       }
+      else return;
       sendPlayerList.clear();
       System.out.println("play queue cleared..");
   }
@@ -37,7 +32,7 @@ public class PlayerQueue
   {
     return playerQueue.size();
   }
-  public static void removePlayer(Socket playerID)
+  public static void removePlayer(java.net.Socket playerID)
   {
     playerQueue.remove(playerID);
   }
