@@ -1,29 +1,21 @@
 package gameScreen;
 
-import javafx.concurrent.Task;
-import uno.UnoCard;
-import utility.Validator1;
+public class ClientUnoGame extends javafx.concurrent.Task<Void> {
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
-public class ClientUnoGame extends Task<Void> {
-
-    BufferedReader in;
-    PrintWriter out;
-    ArrayList<UnoCard> myCards;
+    java.io.BufferedReader in;
+    java.io.PrintWriter out;
+    static java.util.ArrayList<uno.UnoCard> myCards;
+    uno.UnoCard topCard;
     String serverMessage;
     GameScreenController gsc;
 
-    public ClientUnoGame(BufferedReader in, PrintWriter out)
+    public ClientUnoGame(java.io.BufferedReader in, java.io.PrintWriter out)
     {
         System.out.println("client game thread started");
         this.in = in;
         this.out = out;
         gsc = new GameScreenController();
-        myCards = new ArrayList<UnoCard>();
+        myCards = new java.util.ArrayList<>();
     }
 
     @Override
@@ -37,7 +29,7 @@ public class ClientUnoGame extends Task<Void> {
     public void receiveMyCards()
     {
         String cardDetail,tokens[];
-        UnoCard card;
+        uno.UnoCard card;
         try{
             while(true)
             {
@@ -48,13 +40,13 @@ public class ClientUnoGame extends Task<Void> {
                 else if(cardDetail.equals("-EOF-"))
                     break;
                 tokens = cardDetail.split("-");
-                card = new UnoCard(UnoCard.Colour.valueOf(tokens[1]), UnoCard.Number.valueOf(tokens[0]));
+                card = new uno.UnoCard(uno.UnoCard.Colour.valueOf(tokens[1]), uno.UnoCard.Number.valueOf(tokens[0]));
                 myCards.add(card);
 
             }
             System.out.println("Total cards with me : " + myCards.size());
         }
-        catch(IOException ie)
+        catch(java.io.IOException ie)
         {
             ie.printStackTrace();
         }
@@ -63,7 +55,7 @@ public class ClientUnoGame extends Task<Void> {
     public String receiveTopCard()
     {
         String topCardDetail,tokens[],finish;
-        UnoCard topCard = null;
+
         System.out.println("waiting for top card\n");
         try
         {
@@ -73,12 +65,12 @@ public class ClientUnoGame extends Task<Void> {
 
 
             tokens = topCardDetail.split("-");
-            topCard = new UnoCard(UnoCard.Colour.valueOf(tokens[1]), UnoCard.Number.valueOf(tokens[0]));
+            topCard = new uno.UnoCard(uno.UnoCard.Colour.valueOf(tokens[1]), uno.UnoCard.Number.valueOf(tokens[0]));
             System.out.println("Current Top Card : " + topCard.toString());
 
         }
 
-        catch(IOException ie)
+        catch(java.io.IOException ie)
         {
             ie.printStackTrace();
         }
@@ -88,14 +80,14 @@ public class ClientUnoGame extends Task<Void> {
     public void printMyCards()
     {
         int i=0;
-        for(UnoCard card : myCards)
+        for(uno.UnoCard card : myCards)
             System.out.println((++i) + "." + card);
 
     }
 
     public void playOrWait()
     {
-        UnoCard playMyCard = null;
+        uno.UnoCard playMyCard = null;
         int option;
         try
         {
@@ -106,7 +98,7 @@ public class ClientUnoGame extends Task<Void> {
                 printMyCards();
                 while(true)
                 {
-                    option = Validator1.getInt("Enter Card Number to Play(0 if no card) : ");
+                    option = utility.Validator1.getInt("Enter Card Number to Play(0 if no card) : ");
                     option-=1;
                     //        System.out.println("option : " + option);
                     if(option == -1)
@@ -148,7 +140,7 @@ public class ClientUnoGame extends Task<Void> {
                 }
             }
         }
-        catch(IOException i)
+        catch(java.io.IOException i)
         {
             i.printStackTrace();
         }
@@ -157,33 +149,28 @@ public class ClientUnoGame extends Task<Void> {
 
 
     // GAME LOOP STARTS HERE...
-    public void startUnoGame() throws IOException {
+    public void startUnoGame() throws java.io.IOException {
         String topCardString, specialMessage;
-        UnoCard topCard, playMyCard;
+        //UnoCard topCard, playMyCard;
         String gameStatus;
 
         System.out.println("starting game");
         receiveMyCards(); // receive first set of cards
         System.out.println("received cards");
-        printMyCards();
-        try {
-            gsc.displayCards(myCards);
-        }
-        catch (Exception f)
-        {
-            f.printStackTrace();
-        }
+       // printMyCards();
+       // GameScreenController gsc = new gameScreen.GameScreenController();
 
         //**** starting game   ****//
             while(true)
             {
                 gameStatus = receiveTopCard();
+
                 if(gameStatus!=null)
                 {
                     System.out.println("YOU " + gameStatus + " THE GAME!!");
                     break;
                 }
-
+                GameScreenController.setTopCardOnScreen(topCard);
                 playOrWait();
                 //RECEIVE SPECIAL MESSAGE ...
                 specialMessage = in.readLine();
