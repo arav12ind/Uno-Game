@@ -1,7 +1,9 @@
 .Wscreen{
-     -fx-background-image: url("Loading.gif");
-    	-fx-background-size: cover;
-    	-fx-background-position: center;
+        -fx-background-image: url("looppink.gif");
+        -fx-background-color: #000000;
+        -fx-background-repeat: no-repeat;
+    	-fx-background-size: auto;
+    	-fx-background-position: top;
 }
 .cancel{
     -fx-background-color:

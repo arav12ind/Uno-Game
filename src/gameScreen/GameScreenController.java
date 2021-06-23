@@ -1,23 +1,36 @@
 package gameScreen;
 
-public class GameScreenController implements javafx.fxml.Initializable {
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import uno.UnoCard;
+import uno.UnoCardView;
 
-    @javafx.fxml.FXML javafx.scene.control.Button reveal;
-    @javafx.fxml.FXML javafx.scene.layout.HBox hbox;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card1;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card2;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card3;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card4;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card5;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card6;
-    @javafx.fxml.FXML javafx.scene.image.ImageView card7;
-    @javafx.fxml.FXML javafx.scene.image.ImageView topCard;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GameScreenController implements Initializable {
+
+    @FXML Button reveal;
+    @FXML AnchorPane anchorPane;
+    public static FlowPane flowpane;
+    @FXML ImageView topCard;
 
  //  ImageView[] cardHolders;
 
-    java.io.BufferedReader in;
-    java.io.PrintWriter out;
-    static javafx.beans.property.BooleanProperty topCardChanged;
+    BufferedReader in;
+    PrintWriter out;
+    static BooleanProperty topCardChanged;
     static String topCardPath;
 
     public GameScreenController()
@@ -26,35 +39,41 @@ public class GameScreenController implements javafx.fxml.Initializable {
     }
 
     @Override
-    public void initialize(java.net.URL url, java.util.ResourceBundle resourceBundle) {
-        topCardChanged = new javafx.beans.property.SimpleBooleanProperty(false);
-        final javafx.beans.value.ChangeListener changeListener = new javafx.beans.value.ChangeListener() {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        topCardChanged = new SimpleBooleanProperty(false);
+        final ChangeListener changeListener = new ChangeListener() {
             @Override
-            public void changed(javafx.beans.value.ObservableValue observableValue, Object oldValue, Object newValue) {
+            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
                // System.out.println("oldValue:"+ oldValue + ", newValue = " + newValue);
                 if(newValue.equals(true))
                 {
-                    topCard.setImage(new javafx.scene.image.Image(topCardPath));
+                    //topCard.setImage(new Image(topCardPath));
 
                     topCardChanged.set(false);
                 }
 
             }
         };
+        flowpane = new FlowPane(117,800);
+        flowpane.setLayoutX(23);
+        flowpane.setLayoutY(194);
+        flowpane.setHgap(10);
+        flowpane.setPrefWrapLength(700);
         topCardChanged.addListener(changeListener);
+        flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Seven));
+        flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Six));
+        flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Reverse));
+        flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.DrawTwo));
+        flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Skip));
+        anchorPane.getChildren().add(flowpane);
     }
 
-    public void imageClick()
+    public static void initVariables(BufferedReader in, PrintWriter out) throws IOException
     {
-        hbox.getChildren().remove(card4);
+        new Thread(new ClientUnoGame(in, out)).start();
     }
 
-    public static void initVariables(java.io.BufferedReader in, java.io.PrintWriter out) throws java.io.IOException
-    {
-        new Thread(new gameScreen.ClientUnoGame(in, out)).start();
-    }
-
-    public static void setTopCardOnScreen(uno.UnoCard topCard)
+    public static void setTopCardOnScreen(UnoCard topCard)
     {
         try {
                 topCardPath ="/resources/" + topCard + ".jpeg" ;

@@ -1,38 +1,36 @@
 package uno;
 
-public class UnoCard
-{
-  public enum Colour
-  {
+public class UnoCard {
+  public enum Colour {
     Red, Blue, Green, Yellow, Wild;
 
-//    public final String colourLabel;
+    //    public final String colourLabel;
     private static final uno.UnoCard.Colour colours[] = uno.UnoCard.Colour.values();
-/*
-    private Colour(String colourLabel)
-    {
-      this.colourLabel = colourLabel;
-    }
-*/
-    public static uno.UnoCard.Colour getColour(int i)
-    {
+
+    /*
+        private Colour(String colourLabel)
+        {
+          this.colourLabel = colourLabel;
+        }
+    */
+    public static uno.UnoCard.Colour getColour(int i) {
       return uno.UnoCard.Colour.colours[i];
     } // 0 is red, 1 is blue...
   }
 
-  public enum Number
-  {
+  public enum Number {
     Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, DrawTwo, Skip,
     Reverse, Wild, WildDrawFour;
 
-  //  public final String numberLabel;
+    //  public final String numberLabel;
     private static final uno.UnoCard.Number numbers[] = uno.UnoCard.Number.values();
-/*    private Number(String numberLabel)
-    {
-      this.numberLabel = numberLabel;
-    }
-*/    public static uno.UnoCard.Number getNumber(int i)
-    {
+
+    /*    private Number(String numberLabel)
+        {
+          this.numberLabel = numberLabel;
+        }
+    */
+    public static uno.UnoCard.Number getNumber(int i) {
       return uno.UnoCard.Number.numbers[i];
     }
   }
@@ -41,55 +39,51 @@ public class UnoCard
   private final uno.UnoCard.Number number;
 
 
-  public UnoCard(uno.UnoCard.Colour colour, uno.UnoCard.Number number)
-  {
+  public UnoCard(uno.UnoCard.Colour colour, uno.UnoCard.Number number) {
     this.colour = colour;
     this.number = number;
   }
 
-  public uno.UnoCard.Colour getColour()
-  {
+  public uno.UnoCard.Colour getColour() {
     return this.colour;
   }
 
-  public uno.UnoCard.Number getNumber()
-  {
+  public uno.UnoCard.Number getNumber() {
     return this.number;
   }
 
-  public String toString()
-  {
+  public String toString() {
     return this.number + "-" + this.colour;
   }
 
-  public boolean equalsCol(uno.UnoCard.Colour colour)
-  {
+  public boolean equalsCol(uno.UnoCard.Colour colour) {
     uno.UnoCard.Colour wild = uno.UnoCard.Colour.Wild;
 
-    if(this.colour == wild || colour == wild)
+    if (this.colour == wild || colour == wild)
       return true;
-    if(this.colour == colour)
-        return true;
+    if (this.colour == colour)
+      return true;
     else return false;
   }
 
-  public boolean equalsNum(uno.UnoCard.Number number)
-  {
+  public boolean equalsNum(uno.UnoCard.Number number) {
     uno.UnoCard.Number wild = uno.UnoCard.Number.Wild;
-    if(this.number == wild || number == wild)
+    if (this.number == wild || number == wild)
       return true;
-    if(this.number == number)
+    if (this.number == number)
       return true;
     else return false;
   }
 
 
-  public boolean equals(UnoCard card)
-  {
-    return (this.equalsNum(card.number)||this.equalsCol(card.colour));
+  public boolean equals(UnoCard card) {
+    return (this.equalsNum(card.number) || this.equalsCol(card.colour));
+  }
+
+  public String toPath() {
+    return "/resources/" + toString() + ".jpg";
   }
 }
-
 /*
   public static Colour valueOfColourLabel(String label)
   {

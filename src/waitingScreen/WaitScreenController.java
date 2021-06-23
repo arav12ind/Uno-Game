@@ -1,21 +1,32 @@
 package waitingScreen;
 
-public class WaitScreenController implements javafx.fxml.Initializable {
-   @javafx.fxml.FXML
-   private static javafx.scene.control.Button cancel;
-   private static javafx.stage.Stage stage;
-   gameScreen.GameScreenController gs;
+import OpeningScreen.Main;
+import gameScreen.GameScreenController;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class WaitScreenController implements Initializable {
+   @FXML
+   private static Button cancel;
+   GameScreenController gs;
 
     @Override
-    public void initialize(java.net.URL url, java.util.ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
        // test.setText("SURPRISE ");
         //System.out.println("in initialize");// always first no matter what...
     }
 
-    public static void initVariables(java.io.BufferedReader in, java.io.PrintWriter out, javafx.stage.Stage s) throws java.io.IOException, InterruptedException {
-        //System.out.println("in initvar");
-        stage = s;
-        new Thread(new waitingScreen.WaitForReadySignal(in,out)).start();
+    public static void initVariables(BufferedReader in, PrintWriter out) throws IOException, InterruptedException {
+        new Thread(new WaitForReadySignal(in,out)).start();
     }
 
     public static class CancelManager{
@@ -34,20 +45,19 @@ public class WaitScreenController implements javafx.fxml.Initializable {
             }
         }
     }
-    public static waitingScreen.WaitScreenController.CancelManager cl;
+    public static WaitScreenController.CancelManager cl;
 
-        public void setCancelOccured(javafx.event.ActionEvent event)
+        public void setCancelOccured(ActionEvent event)
         {
                try {
-                   stage.getScene().setRoot(javafx.fxml.FXMLLoader.load(getClass().getResource("/OpeningScreen/openingScreen.fxml")));
-                   stage.show();
+                   Main.scene.setRoot(FXMLLoader.load(getClass().getResource("/OpeningScreen/openingScreen.fxml")));
                    cl.setIsCancelled();
-               } catch (java.io.IOException e) {
+               } catch (IOException e) {
                e.printStackTrace();
                 }
         }
 
-    public void readySignalOccured(java.io.BufferedReader in, java.io.PrintWriter out)
+    public void readySignalOccured(BufferedReader in, PrintWriter out)
     {
         System.out.println("in ready func");
         try {
@@ -55,14 +65,14 @@ public class WaitScreenController implements javafx.fxml.Initializable {
 
 
 
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/gameScreen/UnoGameScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameScreen/UnoGameScreen.fxml"));
            // gs = loader.getController();
 
-            stage.getScene().setRoot(loader.load());
+            Main.scene.setRoot(loader.load());
             System.out.println("calling gscontroller");
-            gameScreen.GameScreenController.initVariables(in,out);
+            GameScreenController.initVariables(in,out);
 
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
