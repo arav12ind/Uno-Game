@@ -16,8 +16,16 @@ public class UnoCardView extends ImageView {
         setOnMouseClicked(evt -> {
            GameScreenController.flowpane.getChildren().remove(this);
         });
+
+        this.setCursor(javafx.scene.Cursor.OPEN_HAND);
         setOnMouseEntered(evt ->{
-            this.setStyle("-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
+            this.setStyle("-fx-effect: dropshadow( gaussian , rgba(194,29,143,0.6) , 5, 5 , 0 , 1 );");
+        });
+        setOnMouseExited(evt ->{
+            this.setStyle(null);
+        });
+        setOnMousePressed(evt ->{
+            this.setCursor(javafx.scene.Cursor.CLOSED_HAND);
         });
     }
 }
