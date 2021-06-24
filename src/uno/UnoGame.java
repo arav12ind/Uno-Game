@@ -3,7 +3,7 @@ package uno;
 public class UnoGame
 {
   private int noOfPlayers;
-  private static final int cardsPerGame = 1;
+  private static final int cardsPerGame = 7;
   private java.util.ArrayList<java.net.Socket> players;
   private java.util.ArrayList<java.io.PrintWriter> outList;
   private java.util.ArrayList<java.io.BufferedReader> inList;

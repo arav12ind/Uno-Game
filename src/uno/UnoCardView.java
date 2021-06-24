@@ -9,9 +9,11 @@ import javafx.scene.layout.FlowPane;
 
 public class UnoCardView extends ImageView {
     private UnoCard card;
-    public UnoCardView(UnoCard.Colour c,UnoCard.Number n)
+    public UnoCardView(UnoCard c)
     {
-        card = new UnoCard(c,n);
+        this.card = new uno.UnoCard(c.getColour(), c.getNumber());
+        System.out.println(this.card);
+       // this.card = card;
         setImage(new Image(card.toPath()));
         setOnMouseClicked(evt -> {
            GameScreenController.flowpane.getChildren().remove(this);

@@ -15,7 +15,8 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
         this.in = in;
         this.out = out;
         gsc = new GameScreenController();
-        myCards = new java.util.ArrayList<>();
+        //myCards = new java.util.ArrayList<>();
+        myCards = gameScreen.GameScreenController.initialCards;
     }
 
     @Override
@@ -155,7 +156,7 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
         String gameStatus;
 
         System.out.println("starting game");
-        receiveMyCards(); // receive first set of cards
+        //receiveMyCards(); // receive first set of cards
         System.out.println("received cards");
        // printMyCards();
        // GameScreenController gsc = new gameScreen.GameScreenController();

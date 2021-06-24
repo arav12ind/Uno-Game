@@ -18,6 +18,7 @@ public class WaitScreenController implements Initializable {
    @FXML
    private static Button cancel;
    GameScreenController gs;
+   public static java.util.ArrayList<uno.UnoCard> myCards;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -60,6 +61,8 @@ public class WaitScreenController implements Initializable {
     public void readySignalOccured(BufferedReader in, PrintWriter out)
     {
         System.out.println("in ready func");
+
+        receiveMyCards(in);
         try {
             System.out.println("making loader");
 
@@ -76,4 +79,32 @@ public class WaitScreenController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void receiveMyCards(BufferedReader in)
+    {
+        myCards = new java.util.ArrayList<>();
+        String cardDetail,tokens[];
+        uno.UnoCard card;
+        try{
+            while(true)
+            {
+                cardDetail = in.readLine();
+                if(cardDetail==null)
+                    continue;
+
+                else if(cardDetail.equals("-EOF-"))
+                    break;
+                tokens = cardDetail.split("-");
+                card = new uno.UnoCard(uno.UnoCard.Colour.valueOf(tokens[1]), uno.UnoCard.Number.valueOf(tokens[0]));
+                myCards.add(card);
+
+            }
+            System.out.println("Total cards with me : " + myCards.size());
+        }
+        catch(java.io.IOException ie)
+        {
+            ie.printStackTrace();
+        }
+    }//  END OF receiveMyCards function
+
 }
