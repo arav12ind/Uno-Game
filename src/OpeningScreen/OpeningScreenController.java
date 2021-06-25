@@ -25,9 +25,6 @@ public class OpeningScreenController implements Initializable {
     String host = "localhost", keyboardInput;
     InetAddress server = null;
     Socket client = null;
-    BufferedReader in;
-    PrintWriter out;
-    WaitScreenController wsController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -35,16 +32,16 @@ public class OpeningScreenController implements Initializable {
     }
 
     public void playGame(ActionEvent event) throws IOException {
+
       try {
           startClient();
           Main.scene.setRoot(FXMLLoader.load(getClass().getResource("/waitingScreen/WaitScreen.fxml")));
          // wsController = loader.getController();
           System.out.println("calling wscontroller");
-          WaitScreenController.initVariables(in,out);
-
       }
-      catch(IOException | InterruptedException ie) {
+      catch(IOException ie) {
         error.setText(ie.getMessage());
+        error.setWrapText(true);
       }
     }
 
@@ -55,8 +52,8 @@ public class OpeningScreenController implements Initializable {
     public void startClient() throws IOException {
             server = InetAddress.getByName(host);
             client = new Socket(server, 4444);
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+            Main.in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            Main.out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
     }
 }
 

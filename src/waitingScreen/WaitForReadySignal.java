@@ -1,29 +1,41 @@
 package waitingScreen;
 
+import OpeningScreen.Main;
+
 public class WaitForReadySignal extends javafx.concurrent.Task<Void> {
-    java.io.BufferedReader in;
-    java.io.PrintWriter out;
-    javafx.stage.Stage stage;
 
     static boolean serverReadySignal = false;
+    private WaitScreenController  wsc;
     int cases = 0;
-    public WaitForReadySignal(java.io.BufferedReader in, java.io.PrintWriter out) throws java.io.IOException, InterruptedException {
-        this.in = in;
-        this.out = out;
+
+    private boolean isCancelled;
+    private final Object isCancelledSYNC;
+    public boolean getIsCancelled() {
+        synchronized (isCancelledSYNC) {
+            return isCancelled;
+        }
     }
-
-
-
+    public void setIsCancelled()
+    {
+        synchronized (isCancelledSYNC)
+        {
+            isCancelled=true;
+        }
+    }
+    public WaitForReadySignal(WaitScreenController wsc)
+    {
+        this.wsc=wsc;
+        isCancelled=false;
+        isCancelledSYNC= new Object();
+    }
     public Void call() {
-        WaitScreenController wsc = new waitingScreen.WaitScreenController();
-        WaitScreenController.cl = new waitingScreen.WaitScreenController.CancelManager();
-        while(!WaitScreenController.cl.getIsCancelled()) {
+        while(!getIsCancelled()) {
             try {
-                    if (in.ready()) {
+                    if (Main.in.ready()) {
                         serverReadySignal = true;
-                        String msg = in.readLine();
+                        String msg = Main.in.readLine();
                         System.out.println("server is ready : " + msg);
-                        wsc.readySignalOccured(in,out);
+                        wsc.readySignalOccured();
                         break;
                     }
                     Thread.sleep(500);

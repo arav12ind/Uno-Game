@@ -1,22 +1,25 @@
 package gameScreen;
 
+import OpeningScreen.Main;
+import javafx.scene.layout.FlowPane;
+
+import java.io.IOException;
+
 public class ClientUnoGame extends javafx.concurrent.Task<Void> {
 
     java.io.BufferedReader in;
     java.io.PrintWriter out;
-    static java.util.ArrayList<uno.UnoCard> myCards;
     uno.UnoCard topCard;
-    String serverMessage;
-    GameScreenController gsc;
+    ReceiveCardsEventHandler rcevt;
+    FlowPane flowpane;
 
-    public ClientUnoGame(java.io.BufferedReader in, java.io.PrintWriter out)
+    public ClientUnoGame(ReceiveCardsEventHandler rcevt,FlowPane flowpane)
     {
         System.out.println("client game thread started");
         this.in = in;
         this.out = out;
-        gsc = new GameScreenController();
-        //myCards = new java.util.ArrayList<>();
-        myCards = gameScreen.GameScreenController.initialCards;
+        this.rcevt=rcevt;
+        this.flowpane=flowpane;
     }
 
     @Override
@@ -27,35 +30,9 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
 
 
 
-    public void receiveMyCards()
-    {
-        String cardDetail,tokens[];
-        uno.UnoCard card;
-        try{
-            while(true)
-            {
-                cardDetail = in.readLine();
-                if(cardDetail==null)
-                    continue;
-
-                else if(cardDetail.equals("-EOF-"))
-                    break;
-                tokens = cardDetail.split("-");
-                card = new uno.UnoCard(uno.UnoCard.Colour.valueOf(tokens[1]), uno.UnoCard.Number.valueOf(tokens[0]));
-                myCards.add(card);
-
-            }
-            System.out.println("Total cards with me : " + myCards.size());
-        }
-        catch(java.io.IOException ie)
-        {
-            ie.printStackTrace();
-        }
-    }//  END OF receiveMyCards function
-
     public String receiveTopCard()
     {
-        String topCardDetail,tokens[],finish;
+        String topCardDetail,tokens[];
 
         System.out.println("waiting for top card\n");
         try
@@ -78,95 +55,17 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
         return null;
     } // end of receiveTopCard function.
 
-    public void printMyCards()
-    {
-        int i=0;
-        for(uno.UnoCard card : myCards)
-            System.out.println((++i) + "." + card);
-
-    }
-
-    public void playOrWait()
-    {
+    public void playOrWait() throws IOException {
         String playMyCard = null;
         int option;
-        try
+        String message = in.readLine();
+        if(message.equals("play"))
         {
-            String message = in.readLine();
-
-            if(message.equals("play"))
-            {
-                printMyCards();
-                GameScreenController.setYourTurn(true);
-                while(true)
-                {
-                    playMyCard = GameScreenController.getCardToBePlayed();
-                    System.out.println("the card im playing : " + playMyCard);
-                    if(playMyCard.equals(null))
-                    {
-                        Thread.sleep(500);
-                        continue;
-                    }
-
-                    out.println(playMyCard);
-                    out.flush();
-
-
-                    message = in.readLine();
-                    System.out.println("server says : " + message);
-                    if(message.equals("ok"))
-                    {
-                        //myCards.remove(option);
-                        gameScreen.GameScreenController.remove = true;
-                        break;
-                    }
-                    /*
-                    option = utility.Validator1.getInt("Enter Card Number to Play(0 if no card) : ");
-                    option-=1;
-                    //        System.out.println("option : " + option);
-                    if(option == -1)
-                    {
-                        out.println("drawcard");
-                        out.flush();
-                        message = in.readLine();      // RECEIVE PLAYED OR KEEP MESSAGE
-
-                        System.out.println("played or keep? : " + message);
-                        if(message.equals("keep"))    // CANNOT PLAY THE DRAWN CARD
-                            receiveMyCards();
-
-                        break;
-                    }
-                    else
-                    {
-                        if(option>=myCards.size() || option<0)
-                        {
-                            System.out.println("Not valid : ");
-                            continue;
-                        }
-                        playMyCard = myCards.get(option);
-                        //          System.out.println("im playing : " + playMyCard.toString());
-                        //          printMyCards();
-                        out.println(playMyCard);
-                        out.flush();
-
-
-                        message = in.readLine();
-
-                        if(message.equals("ok"))
-                        {
-                            myCards.remove(option);
-                            break;
-                        }
-
-                        //  else myCards.add(option,playMyCard);
-                    }
-                    */
-                }
-            }
+            rcevt.setClickEnabled(true);
         }
-        catch(java.io.IOException | InterruptedException i)
+        else
         {
-            i.printStackTrace();
+            rcevt.setClickEnabled(false);
         }
 
     }// end of funciton
@@ -179,8 +78,7 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
         String gameStatus;
 
         System.out.println("starting game");
-        //receiveMyCards(); // receive first set of cards
-        System.out.println("received cards");
+
        // printMyCards();
        // GameScreenController gsc = new gameScreen.GameScreenController();
 
@@ -201,10 +99,10 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
                 switch(specialMessage)
                 {
                     case "draw":
-                        receiveMyCards();
+                       flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
                         break;
                     case "wild":
-                        System.out.println("PLAY ANOTHER CARD!...");
+                        rcevt.setClickEnabled(true);
                 }
 
 

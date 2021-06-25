@@ -1,28 +1,36 @@
 package uno;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 public class UnoGame
 {
   private int noOfPlayers;
   private static final int cardsPerGame = 7;
-  private java.util.ArrayList<java.net.Socket> players;
-  private java.util.ArrayList<java.io.PrintWriter> outList;
-  private java.util.ArrayList<java.io.BufferedReader> inList;
-  private java.util.ArrayList<Integer> playerCardCount;
-  private java.util.ArrayList<UnoCard> returnToDeckCards;
+  private ArrayList<Socket> players;
+  private ArrayList<PrintWriter> outList;
+  private ArrayList<BufferedReader> inList;
+  private ArrayList<Integer> playerCardCount;
+  private ArrayList<UnoCard> returnToDeckCards;
   private String specialMessageCode;
   private boolean setSplMessage;
-  private uno.UnoDeck deck;
+  private UnoDeck deck;
 
-    public UnoGame(java.util.ArrayList<java.net.Socket> playersList, int noOfPlayers)  // constructor
+    public UnoGame(ArrayList<Socket> playersList, int noOfPlayers)  // constructor
     {
       this.noOfPlayers = noOfPlayers;
-      players = new java.util.ArrayList<java.net.Socket>();
+      players = new ArrayList<Socket>();
       players = playersList;
-      outList = new java.util.ArrayList<java.io.PrintWriter>();
-      inList = new java.util.ArrayList<java.io.BufferedReader>();
-      playerCardCount = new java.util.ArrayList<Integer>();
-      returnToDeckCards = new java.util.ArrayList<UnoCard>();
-      deck = new uno.UnoDeck();
+      outList = new ArrayList<PrintWriter>();
+      inList = new ArrayList<BufferedReader>();
+      playerCardCount = new ArrayList<Integer>();
+      returnToDeckCards = new ArrayList<UnoCard>();
+      deck = new UnoDeck();
       setSplMessage = false;
       startUnoGame();
     }
@@ -30,17 +38,17 @@ public class UnoGame
     public void initializeConnections()
     {
       try{
-        java.io.PrintWriter out;
-        java.io.BufferedReader in;
-        for(java.net.Socket socket : players)
+        PrintWriter out;
+        BufferedReader in;
+        for(Socket socket : players)
         {
-          in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-          out = new java.io.PrintWriter(socket.getOutputStream(), true);
+          in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+          out = new PrintWriter(socket.getOutputStream(), true);
           outList.add(out);
           inList.add(in);
         }
       }
-      catch(java.io.IOException ie)
+      catch(IOException ie)
       {
         ie.printStackTrace();
       }
@@ -49,7 +57,7 @@ public class UnoGame
 
     public void sendMessage(String msg)
     {
-      for(java.io.PrintWriter out : outList)
+      for(PrintWriter out : outList)
         {out.println(msg);
         out.flush();}
     }
@@ -86,12 +94,12 @@ public class UnoGame
       deck.newDeck();
       deck.shuffle();
   //    System.out.println("Cards in deck : " + deck.getCardsInDeck());
-      java.util.List<UnoCard> playerCards;
-      for(java.io.PrintWriter out : outList)
+      List<UnoCard> playerCards;
+      for(PrintWriter out : outList)
       {
         playerCards = deck.drawMultipleCards(noOfCards);
         returnToDeckCards.addAll(playerCards);
-        for(uno.UnoCard card : playerCards)
+        for(UnoCard card : playerCards)
         {
     //      System.out.println("Card : " + card.toString());
           out.println(card);
@@ -101,11 +109,11 @@ public class UnoGame
       }
     }
 
-    public uno.UnoCard sendTopCard()   // SENT TO ALL PLAYERS
+    public UnoCard sendTopCard()   // SENT TO ALL PLAYERS
     {
-      uno.UnoCard topCard = deck.drawCard();
+      UnoCard topCard = deck.drawCard();
   //    System.out.println(topCard);
-      for(java.io.PrintWriter out : outList)
+      for(PrintWriter out : outList)
       {
           out.println(topCard);   // SENDING THE OPENING CARD...
           out.flush();
@@ -114,10 +122,10 @@ public class UnoGame
       return topCard;
     }
 
-    public void sendNewTopCard(uno.UnoCard card) // TO SEND WHAT THE PLAYER PLAYED WHICH BECOMES TOP CARD
+    public void sendNewTopCard(UnoCard card) // TO SEND WHAT THE PLAYER PLAYED WHICH BECOMES TOP CARD
     {
     //    System.out.println("Sending the card : " + card.toString());
-      for(java.io.PrintWriter out : outList)
+      for(PrintWriter out : outList)
       {
           out.println(card);   // SENDING THE TOP CARD...
           out.flush();
@@ -128,7 +136,7 @@ public class UnoGame
     public void whomToPlay(int playerNumber)
     {
       int i=0;
-      for(java.io.PrintWriter out : outList)
+      for(PrintWriter out : outList)
       {
         if(i==playerNumber)
           out.println("play");
@@ -138,10 +146,10 @@ public class UnoGame
       }
     }
 
-    public uno.UnoCard cardFromPlayerCase1(int playerNumber, uno.UnoCard topCard)
+    public UnoCard cardFromPlayerCase1(int playerNumber, UnoCard topCard)
     {
 
-      uno.UnoCard drawCard = deck.drawCard();
+      UnoCard drawCard = deck.drawCard();
       if(drawCard==null)
       {
         deck.replaceDeckWith(returnToDeckCards);
@@ -170,19 +178,19 @@ public class UnoGame
       }
     }
 
-    public uno.UnoCard cardFromPlayerCase2(int playerNumber, uno.UnoCard topCard, String message)
+    public UnoCard cardFromPlayerCase2(int playerNumber, UnoCard topCard, String message)
     {
-      uno.UnoCard.Colour colour; uno.UnoCard.Number number;
+      UnoCard.Colour colour; UnoCard.Number number;
       String tokens[] = message.split("-");
-      colour = uno.UnoCard.Colour.valueOf(tokens[1]);
-      number = uno.UnoCard.Number.valueOf(tokens[0]);
+      colour = UnoCard.Colour.valueOf(tokens[1]);
+      number = UnoCard.Number.valueOf(tokens[0]);
       setSplMessage = true;
       if(topCard.equalsCol(colour) || topCard.equalsNum(number))
       {
         outList.get(playerNumber).println("ok");
         outList.get(playerNumber).flush();
         updateCardCount(-1,playerNumber);
-        return new uno.UnoCard(colour,number);
+        return new UnoCard(colour,number);
       }
       else
       {
@@ -194,7 +202,7 @@ public class UnoGame
     }
 
 
-public void setSpecialMessage(uno.UnoCard.Number num)
+public void setSpecialMessage(UnoCard.Number num)
 {
   switch(num)
   {
@@ -219,11 +227,11 @@ public void setSpecialMessage(uno.UnoCard.Number num)
 //  System.out.println("special message set to " + specialMessageCode);
 }
 
-    public uno.UnoCard getCardFromPlayer(int playerNumber, uno.UnoCard topCard)
+    public UnoCard getCardFromPlayer(int playerNumber, UnoCard topCard)
     {
       String message;
       //int nxtPlayer = (playerNumber+1)%noOfPlayers,i;
-      uno.UnoCard card = null;
+      UnoCard card = null;
 //      System.out.println("player : " + playerNumber);
       try
       {
@@ -251,7 +259,7 @@ public void setSpecialMessage(uno.UnoCard.Number num)
 
         returnToDeckCards.add(card);
       }
-      catch(java.io.IOException ie)
+      catch(IOException ie)
       {
         ie.printStackTrace();
       }
@@ -284,7 +292,7 @@ public void setSpecialMessage(uno.UnoCard.Number num)
     public void startUnoGame()
     {
         int currentPlayer,nextPlayer,i;
-        uno.UnoCard topCard=null,newTopCard=null,sendCard=null;
+        UnoCard topCard=null,newTopCard=null,sendCard=null;
         boolean gameOver = false, reverse = false;
         String clientMessage;
 

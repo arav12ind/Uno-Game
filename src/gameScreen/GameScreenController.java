@@ -1,5 +1,6 @@
 package gameScreen;
 
+import OpeningScreen.Main;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -10,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import uno.CardClickedEventHandler;
 import uno.UnoCard;
 import uno.UnoCardView;
 import waitingScreen.WaitScreenController;
@@ -28,25 +30,15 @@ public class GameScreenController implements Initializable {
     public static FlowPane flowpane;
     @FXML ImageView topCard;
 
- //  ImageView[] cardHolders;
-
-    BufferedReader in;
-    PrintWriter out;
     static BooleanProperty topCardChanged;
     static String topCardPath;
-    static ArrayList<UnoCard> initialCards;
     static boolean yourTurn = false;
     static String cardToBePlayed;
     public static boolean remove = false;
 
-    public GameScreenController()
-    {
-
-    }
-
     public static void setCardToBePlayed(String source) {
         cardToBePlayed = source;
-        System.out.println(cardToBePlayed);
+        System.out.println("SetCardToBBePlayed"+cardToBePlayed);
     }
 
     public static String getCardToBePlayed() {
@@ -55,7 +47,6 @@ public class GameScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initialCards = WaitScreenController.myCards;
         topCardChanged = new SimpleBooleanProperty(false);
         final ChangeListener changeListener = new ChangeListener() {
             @Override
@@ -76,30 +67,22 @@ public class GameScreenController implements Initializable {
         flowpane.setHgap(10);
         flowpane.setPrefWrapLength(700);
         topCardChanged.addListener(changeListener);
-        for(UnoCard card : initialCards)
-        {
-            flowpane.getChildren().add(new UnoCardView(card));
-        }
-
         anchorPane.getChildren().add(flowpane);
+        ReceiveCardsEventHandler rcevt = new ReceiveCardsEventHandler(new CardClickedEventHandler());
+        flowpane.addEventHandler(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE,rcevt);
+        System.out.println("Before flowpane fireevent");
+        flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
+        new Thread(new ClientUnoGame(rcevt,flowpane)).start();
 
     }
 
-    public static void initVariables(BufferedReader in, PrintWriter out) throws IOException
-    {
-        new Thread(new ClientUnoGame(in, out)).start();
-    }
-
-    public static void setTopCardOnScreen(UnoCard topCard)
-    {
+    public static void setTopCardOnScreen(UnoCard topCard) {
         try {
-                topCardPath ="/resources/" + topCard + ".jpg" ;
+            topCardPath = "/resources/" + topCard + ".jpg";
             System.out.println("changing");
             topCardChanged.set(true);
             System.out.println("changed");
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

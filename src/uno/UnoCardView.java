@@ -12,42 +12,39 @@ import javafx.scene.layout.FlowPane;
 
 public class UnoCardView extends ImageView {
     private UnoCard card;
-    public UnoCardView(UnoCard c)
+    private boolean choosable=true;
+    public UnoCardView(UnoCard.Colour valueOf, UnoCard.Number valueOf1)
     {
-        this.card = new UnoCard(c.getColour(), c.getNumber());
+        this.card = new UnoCard(valueOf, valueOf1);
         System.out.println(this.card);
-       // this.card = card;
         setImage(new Image(card.toPath()));
         this.setUserData(card.toString());
-        EventHandler<MouseEvent> clicked = (MouseEvent t) ->{
-            if(GameScreenController.getYourTurn()) {
-                gameScreen.GameScreenController.setCardToBePlayed((String)((ImageView)t.getSource()).getUserData());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(gameScreen.GameScreenController.remove)
-                    GameScreenController.flowpane.getChildren().remove(this);
-            };
-
-            //System.out.println(GameScreenController);
-        };
-        setOnMouseClicked(clicked);
      //   setOnMouseClicked(evt -> {
            //GameScreenController.flowpane.getChildren().remove(this);
 
        // });
 
         this.setCursor(Cursor.OPEN_HAND);
-        setOnMouseEntered(evt ->{
+        /*setOnMouseEntered(evt ->{
             this.setStyle("-fx-effect: dropshadow( gaussian , rgba(194,29,143,0.6) , 5, 5 , 0 , 1 );");
-        });
-        setOnMouseExited(evt ->{
+        });*/
+        /*ssetOnMouseExited(evt ->{
             this.setStyle(null);
-        });
+        });*/
         setOnMousePressed(evt ->{
             this.setCursor(Cursor.CLOSED_HAND);
         });
+    }
+
+    public void setChoosable(boolean choosable)
+    {
+        this.choosable=choosable;
+    }
+    public UnoCard getCard()
+    {
+        return card;
+    }
+    public boolean isChoosable() {
+        return choosable;
     }
 }
