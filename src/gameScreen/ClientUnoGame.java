@@ -88,7 +88,7 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
 
     public void playOrWait()
     {
-        uno.UnoCard playMyCard = null;
+        String playMyCard = null;
         int option;
         try
         {
@@ -97,8 +97,30 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
             if(message.equals("play"))
             {
                 printMyCards();
+                GameScreenController.setYourTurn(true);
                 while(true)
                 {
+                    playMyCard = GameScreenController.getCardToBePlayed();
+                    System.out.println("the card im playing : " + playMyCard);
+                    if(playMyCard.equals(null))
+                    {
+                        Thread.sleep(500);
+                        continue;
+                    }
+
+                    out.println(playMyCard);
+                    out.flush();
+
+
+                    message = in.readLine();
+                    System.out.println("server says : " + message);
+                    if(message.equals("ok"))
+                    {
+                        //myCards.remove(option);
+                        gameScreen.GameScreenController.remove = true;
+                        break;
+                    }
+                    /*
                     option = utility.Validator1.getInt("Enter Card Number to Play(0 if no card) : ");
                     option-=1;
                     //        System.out.println("option : " + option);
@@ -138,10 +160,11 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
 
                         //  else myCards.add(option,playMyCard);
                     }
+                    */
                 }
             }
         }
-        catch(java.io.IOException i)
+        catch(java.io.IOException | InterruptedException i)
         {
             i.printStackTrace();
         }

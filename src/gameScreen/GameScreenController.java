@@ -6,7 +6,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -36,10 +35,22 @@ public class GameScreenController implements Initializable {
     static BooleanProperty topCardChanged;
     static String topCardPath;
     static ArrayList<UnoCard> initialCards;
+    static boolean yourTurn = false;
+    static String cardToBePlayed;
+    public static boolean remove = false;
 
     public GameScreenController()
     {
 
+    }
+
+    public static void setCardToBePlayed(String source) {
+        cardToBePlayed = source;
+        System.out.println(cardToBePlayed);
+    }
+
+    public static String getCardToBePlayed() {
+        return cardToBePlayed;
     }
 
     @Override
@@ -69,12 +80,9 @@ public class GameScreenController implements Initializable {
         {
             flowpane.getChildren().add(new UnoCardView(card));
         }
-       // flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Seven));
-       // flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Six));
-       // flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Reverse));
-       // flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.DrawTwo));
-       // flowpane.getChildren().add(new UnoCardView(UnoCard.Colour.Blue,UnoCard.Number.Skip));
+
         anchorPane.getChildren().add(flowpane);
+
     }
 
     public static void initVariables(BufferedReader in, PrintWriter out) throws IOException
@@ -96,5 +104,13 @@ public class GameScreenController implements Initializable {
         }
     }
 
+   public static boolean getYourTurn()
+   {
+       return yourTurn;
+   }
 
+    public static void setYourTurn(boolean bool)
+    {
+        yourTurn = bool;
+    }
 }
