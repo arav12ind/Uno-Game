@@ -2,23 +2,19 @@ package gameScreen;
 
 import OpeningScreen.Main;
 import javafx.scene.layout.FlowPane;
+import uno.CardClickedEventHandler;
 
 import java.io.IOException;
 
 public class ClientUnoGame extends javafx.concurrent.Task<Void> {
-
-    java.io.BufferedReader in;
-    java.io.PrintWriter out;
     uno.UnoCard topCard;
-    ReceiveCardsEventHandler rcevt;
+    CardClickedEventHandler ccevt;
     FlowPane flowpane;
 
-    public ClientUnoGame(ReceiveCardsEventHandler rcevt,FlowPane flowpane)
+    public ClientUnoGame(CardClickedEventHandler ccevt, FlowPane flowpane)
     {
         System.out.println("client game thread started");
-        this.in = in;
-        this.out = out;
-        this.rcevt=rcevt;
+        this.ccevt = ccevt;
         this.flowpane=flowpane;
     }
 
@@ -37,7 +33,7 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
         System.out.println("waiting for top card\n");
         try
         {
-            topCardDetail = in.readLine();
+            topCardDetail = Main.in.readLine();
             if(topCardDetail.equals("WON") || topCardDetail.equals("LOST"))
                 return topCardDetail;
 
@@ -58,14 +54,14 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
     public void playOrWait() throws IOException {
         String playMyCard = null;
         int option;
-        String message = in.readLine();
+        String message = Main.in.readLine();
         if(message.equals("play"))
         {
-            rcevt.setClickEnabled(true);
+            ccevt.setEnabled(true);
         }
         else
         {
-            rcevt.setClickEnabled(false);
+            ccevt.setEnabled(false);
         }
 
     }// end of funciton
@@ -95,14 +91,14 @@ public class ClientUnoGame extends javafx.concurrent.Task<Void> {
                 GameScreenController.setTopCardOnScreen(topCard);
                 playOrWait();
                 //RECEIVE SPECIAL MESSAGE ...
-                specialMessage = in.readLine();
+                specialMessage = Main.in.readLine();
                 switch(specialMessage)
                 {
                     case "draw":
                        flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
                         break;
                     case "wild":
-                        rcevt.setClickEnabled(true);
+                        ccevt.setEnabled(true);
                 }
 
 

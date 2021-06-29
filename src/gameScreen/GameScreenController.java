@@ -68,11 +68,11 @@ public class GameScreenController implements Initializable {
         flowpane.setPrefWrapLength(700);
         topCardChanged.addListener(changeListener);
         anchorPane.getChildren().add(flowpane);
-        ReceiveCardsEventHandler rcevt = new ReceiveCardsEventHandler(new CardClickedEventHandler());
-        flowpane.addEventHandler(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE,rcevt);
+        CardClickedEventHandler ccevt = new CardClickedEventHandler();
+        flowpane.addEventHandler(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE, new ReceiveCardsEventHandler(ccevt));
         System.out.println("Before flowpane fireevent");
         flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
-        new Thread(new ClientUnoGame(rcevt,flowpane)).start();
+        new Thread(new ClientUnoGame(ccevt,flowpane)).start();
 
     }
 
