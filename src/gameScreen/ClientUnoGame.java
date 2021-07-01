@@ -5,10 +5,9 @@ import OpeningScreen.OpeningScreenController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import uno.CardClickedEventHandler;
+import uno.CardPane;
 import uno.UnoCard;
 import uno.UnoCardView;
 
@@ -18,9 +17,9 @@ import java.util.Iterator;
 public class ClientUnoGame extends Task<Void> {
     CardClickedEventHandler ccevt;
     final Button drawCard;
-    FlowPane flowpane;
+    CardPane flowpane;
 
-    public ClientUnoGame(Button drawCard, FlowPane flowpane)
+    public ClientUnoGame(Button drawCard, CardPane flowpane)
     {
         System.out.println("client game thread started");
         this.ccevt = new CardClickedEventHandler();
@@ -48,7 +47,7 @@ public class ClientUnoGame extends Task<Void> {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            flowpane.getChildren().addAll(ucs);
+                            flowpane.addAll(ucs);
                         }
                     });
                     break;
@@ -59,15 +58,7 @@ public class ClientUnoGame extends Task<Void> {
                         public void run() {
                             drawCard.setText("draw card");
                             drawCard.setVisible(false);
-                            Iterator<Node> it = flowpane.getChildren().iterator();
-                            while(it.hasNext())
-                            {
-                                if(((UnoCardView)it.next()).getCard().equals(new UnoCard(finalMsg)))
-                                {
-                                    it.remove();
-                                    break;
-                                }
-                            }
+                            flowpane.remove(new UnoCard(finalMsg));
                         }
                     });
                     break;

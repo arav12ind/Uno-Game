@@ -31,11 +31,9 @@ public class GameScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         drawCard.setVisible(false);
         topCardChanged = new SimpleBooleanProperty(false);
-        FlowPane flowpane = new FlowPane(117, 800);
+        CardPane flowpane = new CardPane(10,150, 80);
         flowpane.setLayoutX(23);
         flowpane.setLayoutY(194);
-        flowpane.setHgap(10);
-        flowpane.setPrefWrapLength(700);
         topCardChanged.addListener((observableValue, oldValue, newValue) -> {
 
             if(newValue.equals(true))
