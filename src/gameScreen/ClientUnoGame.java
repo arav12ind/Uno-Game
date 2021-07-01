@@ -1,114 +1,98 @@
 package gameScreen;
 
 import OpeningScreen.Main;
+import OpeningScreen.OpeningScreenController;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import uno.CardClickedEventHandler;
+import uno.UnoCard;
+import uno.UnoCardView;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class ClientUnoGame extends javafx.concurrent.Task<Void> {
-    uno.UnoCard topCard;
+public class ClientUnoGame extends Task<Void> {
     CardClickedEventHandler ccevt;
+    final Button drawCard;
     FlowPane flowpane;
 
-    public ClientUnoGame(CardClickedEventHandler ccevt, FlowPane flowpane)
+    public ClientUnoGame(Button drawCard, FlowPane flowpane)
     {
         System.out.println("client game thread started");
-        this.ccevt = ccevt;
+        this.ccevt = new CardClickedEventHandler();
+        this.drawCard = drawCard;
         this.flowpane=flowpane;
     }
 
     @Override
     protected Void call() throws Exception {
-        startUnoGame();
-        return null;
-    }
-
-
-
-    public String receiveTopCard()
-    {
-        String topCardDetail,tokens[];
-
-        System.out.println("waiting for top card\n");
-        try
-        {
-            topCardDetail = Main.in.readLine();
-            if(topCardDetail.equals("WON") || topCardDetail.equals("LOST"))
-                return topCardDetail;
-
-
-            tokens = topCardDetail.split("-");
-            topCard = new uno.UnoCard(uno.UnoCard.Colour.valueOf(tokens[1]), uno.UnoCard.Number.valueOf(tokens[0]));
-            System.out.println("Current Top Card : " + topCard.toString());
-
-        }
-
-        catch(java.io.IOException ie)
-        {
-            ie.printStackTrace();
-        }
-        return null;
-    } // end of receiveTopCard function.
-
-    public void playOrWait() throws IOException {
-        String playMyCard = null;
-        int option;
-        String message = Main.in.readLine();
-        if(message.equals("play"))
-        {
-            ccevt.setEnabled(true);
-        }
-        else
-        {
-            ccevt.setEnabled(false);
-        }
-
-    }// end of funciton
-
-
-    // GAME LOOP STARTS HERE...
-    public void startUnoGame() throws java.io.IOException {
-        String topCardString, specialMessage;
-        //UnoCard topCard, playMyCard;
-        String gameStatus;
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/OpeningScreen/openingScreen.fxml"));
+        UnoCard topCard;
+        String msg;
         System.out.println("starting game");
-
-       // printMyCards();
-       // GameScreenController gsc = new gameScreen.GameScreenController();
-
-        //**** starting game   ****//
-            while(true)
+        while(true)
+        {
+            System.out.println("Server : "+(msg = Main.in.readLine()));
+            switch(msg)
             {
-                gameStatus = receiveTopCard();
-
-                if(gameStatus!=null)
-                {
-                    System.out.println("YOU " + gameStatus + " THE GAME!!");
+                case "draw":
+                    ArrayList<UnoCardView> ucs = new ArrayList<>();
+                    while (!(msg = Main.in.readLine()).equals("-EOF-")) {
+                        System.out.println("Receive cards : " + msg);
+                        ucs.add(new UnoCardView(msg,ccevt));
+                    }
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            flowpane.getChildren().addAll(ucs);
+                        }
+                    });
                     break;
-                }
-                GameScreenController.setTopCardOnScreen(topCard);
-                playOrWait();
-                //RECEIVE SPECIAL MESSAGE ...
-                specialMessage = Main.in.readLine();
-                switch(specialMessage)
-                {
-                    case "draw":
-                       flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
-                        break;
-                    case "wild":
-                        ccevt.setEnabled(true);
-                }
-
-
+                case "ok":
+                    String finalMsg = Main.in.readLine();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawCard.setText("draw card");
+                            drawCard.setVisible(false);
+                            Iterator<Node> it = flowpane.getChildren().iterator();
+                            while(it.hasNext())
+                            {
+                                if(((UnoCardView)it.next()).getCard().equals(new UnoCard(finalMsg)))
+                                {
+                                    it.remove();
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                    break;
+                case "wrong card":
+                case "play":
+                    drawCard.setVisible(true);
+                    ccevt.setEnabled(true);
+                    break;
+                case "wait":
+                    break;
+                case "top card":
+                    topCard = new UnoCard(Main.in.readLine());
+                    GameScreenController.setTopCardOnScreen(topCard);
+                    break;
+                case "won":
+                    Main.scene.setRoot(loader.load());
+                    ((OpeningScreenController)loader.getController()).setGameStatus("WON");
+                    return null;
+                case "lost":
+                    Main.scene.setRoot(loader.load());
+                    ((OpeningScreenController)loader.getController()).setGameStatus("LOST");
+                    return null;
+                default:
             }
-
-//******** game ends  ***********//
-
-
-
-    }// end of StartUnoGame
-
+        }
+    }
 
 }// end of class

@@ -95,5 +95,10 @@
             <Font name="System Bold Italic" size="19.0" />
          </font>
       </Label>
+      <Label fx:id="gameStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="349.0" layoutY="25.0" prefHeight="62.0" prefWidth="115.0" textAlignment="CENTER" textFill="#53148a" wrapText="true">
+         <font>
+            <Font size="42.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

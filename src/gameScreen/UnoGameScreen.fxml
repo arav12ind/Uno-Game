@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameScreen.GameScreenController">
+<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameScreen.GameScreenController">
    <children>
       <Label layoutX="275.0" layoutY="15.0" prefHeight="27.0" prefWidth="61.0" text="TOP CARD" />
       <Label alignment="CENTER" layoutX="238.0" layoutY="160.0" prefHeight="40.0" prefWidth="135.0" text="YOUR CARDS">
@@ -28,5 +30,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="drawCard" layoutX="141.0" layoutY="74.0" mnemonicParsing="false" onAction="#drawCardController" text="draw card" />
    </children>
 </AnchorPane>

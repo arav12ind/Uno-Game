@@ -5,101 +5,78 @@
 */
 package uno;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class UnoDeck
 {
-  private UnoCard deck[];
-  private int cardsInDeck;
-  private UnoCard.Colour colour;
+  private Stack<UnoCard> deck;
   public UnoDeck()
   {
-    deck = new UnoCard[108];  // filling 108 cards into the deck.(no value yet given)
-  }
-
-  public void newDeck()
-  {
-    int i,j;
-    UnoCard.Colour colours[] = UnoCard.Colour.values(); // filling the array with all colours
-    cardsInDeck = -1;
-    UnoCard.Number numbers[], number;
-    for(i=0;i<colours.length-1; ++i) // loop to add cards of each colour except the wild card.
+    deck = new Stack<>();
+    for(UnoCard.Colour c : UnoCard.Colour.values())
     {
-      colour = colours[i];
-      deck[++cardsInDeck] = new UnoCard(colour, UnoCard.Number.getNumber(0)); // 1 zero card
-
-      for(j=1;j<13; ++j)
+      if( c != UnoCard.Colour.Wild)
       {
-        deck[++cardsInDeck] = new UnoCard(colour, UnoCard.Number.getNumber(j));
-        deck[++cardsInDeck] = new UnoCard(colour, UnoCard.Number.getNumber(j)); // two cards of 1-9 numbers plus skip reverse, and DrawTwo..
+        for(UnoCard.Number n : UnoCard.Number.values())
+        {
+          if(n != UnoCard.Number.WildDrawFour && n != UnoCard.Number.Wild)
+          {
+            deck.push(new UnoCard(c, n));
+          }
+        }
       }
-    }// i for loop
-
-    // NOW TO ADD WILD AND WildDrawFour
-      for(i=0;i<4; ++i)
-      {
-        deck[++cardsInDeck] = new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.Wild);
-        deck[++cardsInDeck] = new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.WildDrawFour);
-      }
-  }// end of newDeck function
+    }
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.Wild));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.Wild));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.Wild));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.Wild));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.WildDrawFour));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.WildDrawFour));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.WildDrawFour));
+    deck.push(new UnoCard(UnoCard.Colour.Wild, UnoCard.Number.WildDrawFour));
+  }
 
   public int getCardsInDeck()
   {
-    return cardsInDeck + 1;
+    return deck.size() + 1;
   }
 
-  public void replaceDeckWith(ArrayList<UnoCard> cards)  // TO REPLACE THE PLAYED DOWN CARDS INTO DECK.
+  public void replaceDeckWith(Stack<UnoCard> cards)  // TO REPLACE THE PLAYED DOWN CARDS INTO DECK.
   {
-    deck = cards.toArray(new UnoCard[cards.size()]);
-    cardsInDeck = deck.length;
-    System.out.println("Cards in deck" + cardsInDeck);
+    deck = cards;
   }
-
   public boolean isEmpty()
   {
-    return cardsInDeck==0;
+    return deck.isEmpty();
   }
 
   public void shuffle()
   {
-    int n = deck.length,randomValue;
-    int i,j;
-    Random random = new Random();
-    UnoCard randomCard;
-
-    for(i=0;i<deck.length;++i)
-    {
-      randomValue = i + random.nextInt(n-i);
-      randomCard = deck[randomValue];   // now we have a random card;
-      deck[randomValue] = deck[i];
-      deck[i] = randomCard;
-    }
+    Collections.shuffle(deck);
   }// end of shuffle function
 
-  public UnoCard drawCard() throws IllegalArgumentException
+  public UnoCard drawCard(Stack<UnoCard> cards) throws EmptyStackException
   {
-    UnoCard card;
-    if(isEmpty())
-      return null;
-    card = deck[cardsInDeck];
-    --cardsInDeck;
-    return card;
+    if(deck.isEmpty())
+    {
+      deck = (Stack<UnoCard>) cards.clone();
+      cards.clear();
+    }
+    return deck.pop();
   }
-
-   public ArrayList<UnoCard> drawMultipleCards(int n) throws IllegalArgumentException
+   public ArrayList<UnoCard> drawMultipleCards(int n,Stack<UnoCard> cards) throws IllegalArgumentException
   {
-    int i;
     if(n<0)
       throw new IllegalArgumentException("Only positive draw allowed");
-    if(n>cardsInDeck)
-      throw new IllegalArgumentException("drawing more than in the deck!!");
-
-    ArrayList<UnoCard> retCards = new ArrayList<UnoCard>();
-    for(i=0;i<n;++i,--cardsInDeck)
-      retCards.add(deck[cardsInDeck]);
-
-    return retCards;
+    if(n>deck.size()) {
+      deck = (Stack<UnoCard>) cards.clone();
+      cards.clear();
+    }
+    ArrayList<UnoCard> drawn = new ArrayList<UnoCard>();
+    for(int i=0;i<n;++i)
+    {
+      drawn.add(deck.pop());
+    }
+    return drawn;
   }
-
 }// end of class

@@ -1,13 +1,13 @@
 package waitingScreen;
 
 import OpeningScreen.Main;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
 
-public class WaitForReadySignal extends javafx.concurrent.Task<Void> {
+import java.io.IOException;
 
-    static boolean serverReadySignal = false;
-    private WaitScreenController  wsc;
-    int cases = 0;
-
+public class WaitForReadySignal extends Task<Void> {
     private boolean isCancelled;
     private final Object isCancelledSYNC;
     public boolean getIsCancelled() {
@@ -22,9 +22,8 @@ public class WaitForReadySignal extends javafx.concurrent.Task<Void> {
             isCancelled=true;
         }
     }
-    public WaitForReadySignal(WaitScreenController wsc)
+    public WaitForReadySignal()
     {
-        this.wsc=wsc;
         isCancelled=false;
         isCancelledSYNC= new Object();
     }
@@ -32,23 +31,26 @@ public class WaitForReadySignal extends javafx.concurrent.Task<Void> {
         while(!getIsCancelled()) {
             try {
                     if (Main.in.ready()) {
-                        serverReadySignal = true;
                         String msg = Main.in.readLine();
                         System.out.println("server is ready : " + msg);
-                        wsc.readySignalOccured();
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Main.scene.setRoot(FXMLLoader.load(WaitForReadySignal.this.getClass().getResource("/gameScreen/UnoGameScreen.fxml")));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                         break;
                     }
                     Thread.sleep(500);
-                } catch (java.io.IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
                 }
         }
         return null;
-    }
-
-    public static boolean getReadyServerSignal()
-    {
-        return serverReadySignal;
     }
 
 }

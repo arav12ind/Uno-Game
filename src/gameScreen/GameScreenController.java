@@ -3,82 +3,57 @@ package gameScreen;
 import OpeningScreen.Main;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import uno.CardClickedEventHandler;
-import uno.UnoCard;
-import uno.UnoCardView;
-import waitingScreen.WaitScreenController;
+import javafx.event.ActionEvent;
+import uno.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameScreenController implements Initializable {
 
 
     @FXML AnchorPane anchorPane;
-    public static FlowPane flowpane;
     @FXML ImageView topCard;
-
+    @FXML
+    Button drawCard;
     static BooleanProperty topCardChanged;
     static String topCardPath;
-    static boolean yourTurn = false;
-    static String cardToBePlayed;
-    public static boolean remove = false;
 
-    public static void setCardToBePlayed(String source) {
-        cardToBePlayed = source;
-        System.out.println("SetCardToBBePlayed"+cardToBePlayed);
-    }
-
-    public static String getCardToBePlayed() {
-        return cardToBePlayed;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        drawCard.setVisible(false);
         topCardChanged = new SimpleBooleanProperty(false);
-        final ChangeListener changeListener = new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
-
-                if(newValue.equals(true))
-                {
-                    topCard.setImage(new Image(topCardPath));
-
-                    topCardChanged.set(false);
-                }
-
-            }
-        };
-        flowpane = new FlowPane(117,800);
+        FlowPane flowpane = new FlowPane(117, 800);
         flowpane.setLayoutX(23);
         flowpane.setLayoutY(194);
         flowpane.setHgap(10);
         flowpane.setPrefWrapLength(700);
-        topCardChanged.addListener(changeListener);
-        anchorPane.getChildren().add(flowpane);
-        CardClickedEventHandler ccevt = new CardClickedEventHandler();
-        flowpane.addEventHandler(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE, new ReceiveCardsEventHandler(ccevt));
-        System.out.println("Before flowpane fireevent");
-        flowpane.fireEvent(new ClientSideEvent(ClientSideEvent.RECEIVE_CARD_EVENT_TYPE));
-        new Thread(new ClientUnoGame(ccevt,flowpane)).start();
+        topCardChanged.addListener((observableValue, oldValue, newValue) -> {
 
+            if(newValue.equals(true))
+            {
+                topCard.setImage(new Image(topCardPath));
+
+                topCardChanged.set(false);
+            }
+
+        });
+        anchorPane.getChildren().add(flowpane);
+
+        new Thread(new ClientUnoGame(drawCard, flowpane)).start();
     }
 
     public static void setTopCardOnScreen(UnoCard topCard) {
         try {
-            topCardPath = "/resources/" + topCard + ".jpg";
+            topCardPath = topCard.toPath();
             System.out.println("changing");
             topCardChanged.set(true);
             System.out.println("changed");
@@ -87,13 +62,17 @@ public class GameScreenController implements Initializable {
         }
     }
 
-   public static boolean getYourTurn()
-   {
-       return yourTurn;
-   }
-
-    public static void setYourTurn(boolean bool)
-    {
-        yourTurn = bool;
+    public void drawCardController(ActionEvent actionEvent) {
+        String msg = drawCard.getText();
+        if(msg.equals("draw card"))
+        {
+            drawCard.setText("pass");
+        }
+        else
+        {
+            drawCard.setText("draw card");
+            drawCard.setVisible(false);
+        }
+        Main.out.println(msg);
     }
 }

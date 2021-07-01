@@ -1,40 +1,51 @@
 package server;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.Socket;
+
 public class MultiServerThread extends Thread
 {
-    private final java.net.Socket socket;
-  public MultiServerThread(java.net.Socket socket)
+    private boolean gameStarted;
+    private final Socket socket;
+  public MultiServerThread(Socket socket)
   {
   	super("MultiServerThread");
+  	gameStarted = false;
   	this.socket = socket;
   }
-
+  public void GameStarted()
+  {
+      gameStarted = true;
+  }
+  public Socket getSocket()
+  {
+      return socket;
+  }
   public void run()
   {
   	System.out.println("New client with address : "+socket.getInetAddress());
   	try {
-  	    java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
+  	    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String inputLine;
-        server.PlayerQueue.AddPlayerToQueue(socket);
-        while (!server.PlayerQueue.isGameStarted()) {
+        PlayerQueue.AddPlayerToQueue(this);
+        while (!gameStarted) {
             if(in.ready())
             {
                 inputLine = in.readLine();
                 if(inputLine.equalsIgnoreCase("cancel"))
                 {
-                    server.PlayerQueue.removePlayer(socket);
+                    PlayerQueue.removePlayer(socket);
                     System.out.println(socket.getInetAddress()+" : left");
                     break;
                 }
             }
             Thread.sleep(500);
         }
-    }
-     catch (java.io.IOException | InterruptedException e)
-     {
-	      e.printStackTrace();
-     }
-    finally
+    } catch (Exception e)
+    {
+         e.printStackTrace();
+    } finally
     {
   		try
       {

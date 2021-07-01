@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import waitingScreen.WaitScreenController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,23 +20,22 @@ import java.util.ResourceBundle;
 public class OpeningScreenController implements Initializable {
     @FXML
     private Label error;
-
-    String host = "localhost", keyboardInput;
-    InetAddress server = null;
-    Socket client = null;
+    @FXML private Label gameStatus;
+    String host = "localhost";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-    public void playGame(ActionEvent event) throws IOException {
+    public void playGame(ActionEvent event){
 
       try {
-          startClient();
-          Main.scene.setRoot(FXMLLoader.load(getClass().getResource("/waitingScreen/WaitScreen.fxml")));
-         // wsController = loader.getController();
+          Main.socket = new Socket(InetAddress.getByName(host), 4444);
+          Main.in = new BufferedReader(new InputStreamReader(Main.socket.getInputStream()));
+          Main.out = new PrintWriter(new OutputStreamWriter(Main.socket.getOutputStream()),true);
           System.out.println("calling wscontroller");
+          Main.scene.setRoot(FXMLLoader.load(getClass().getResource("/waitingScreen/WaitScreen.fxml")));
       }
       catch(IOException ie) {
         error.setText(ie.getMessage());
@@ -49,11 +47,14 @@ public class OpeningScreenController implements Initializable {
         Platform.exit();
     }
 
-    public void startClient() throws IOException {
-            server = InetAddress.getByName(host);
-            client = new Socket(server, 4444);
-            Main.in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            Main.out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+    public void setGameStatus(String msg)
+    {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                gameStatus.setText(msg);
+            }
+        });
     }
 }
 
