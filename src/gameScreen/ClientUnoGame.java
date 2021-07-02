@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import uno.CardClickedEventHandler;
 import uno.CardPane;
 import uno.UnoCard;
@@ -18,13 +19,14 @@ public class ClientUnoGame extends Task<Void> {
     CardClickedEventHandler ccevt;
     final Button drawCard;
     CardPane flowpane;
-
-    public ClientUnoGame(Button drawCard, CardPane flowpane)
+    Label chance;
+    public ClientUnoGame(Button drawCard, Label chance, CardPane flowpane)
     {
         System.out.println("client game thread started");
         this.ccevt = new CardClickedEventHandler();
         this.drawCard = drawCard;
         this.flowpane=flowpane;
+        this.chance = chance;
     }
 
     @Override
@@ -44,30 +46,26 @@ public class ClientUnoGame extends Task<Void> {
                         System.out.println("Receive cards : " + msg);
                         ucs.add(new UnoCardView(msg,ccevt));
                     }
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            flowpane.addAll(ucs);
-                        }
-                    });
+                    Platform.runLater(() -> flowpane.addAll(ucs));
                     break;
                 case "ok":
                     String finalMsg = Main.in.readLine();
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            drawCard.setText("draw card");
-                            drawCard.setVisible(false);
-                            flowpane.remove(new UnoCard(finalMsg));
-                        }
+                    Platform.runLater(() -> {
+                        drawCard.setText("draw card");
+                        drawCard.setVisible(false);
+                        flowpane.remove(new uno.UnoCard(finalMsg));
                     });
                     break;
                 case "wrong card":
                 case "play":
                     drawCard.setVisible(true);
                     ccevt.setEnabled(true);
+                    Platform.runLater(() -> chance.setText("YOUR TURN"));
+
                     break;
                 case "wait":
+                    Platform.runLater(() -> chance.setText("OPPONENTS TURN"));
+
                     break;
                 case "top card":
                     topCard = new UnoCard(Main.in.readLine());

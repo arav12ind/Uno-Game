@@ -4,6 +4,7 @@ import gameScreen.GameScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -62,6 +63,12 @@ public class UnoCardView extends ImageView {
         setOnMouseReleased(evt ->{
             this.setCursor(Cursor.OPEN_HAND);
         });
+        Tooltip t = new javafx.scene.control.Tooltip(card.toString());
+       // t.setGraphic(this);
+
+        Tooltip.install(this,t);
+        //this.setT
+
     }
 
     public void setChoosable(boolean choosable)
